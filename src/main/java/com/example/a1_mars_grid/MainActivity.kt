@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
             mediaPlayer = MediaPlayer.create(this, resId)
             textIgen.text = "Grön har fyra i rad"
+            textIgen.text = "Gron har fyra i rad"
         }
         else
         {
