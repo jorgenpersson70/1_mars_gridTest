@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import kotlin.collections.ArrayList
@@ -109,6 +111,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardImage : ImageView = itemView.findViewById(R.id.cardImage)
+        val cardView : CardView = itemView.findViewById(R.id.cardView)
   //      val cardTitle : TextView = itemView.findViewById(R.id.cardTitle)
     }
 
@@ -116,6 +119,15 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
        val view = LayoutInflater.from(parent.context).inflate(R.layout.grid_item_view,parent,false)
         return ViewHolder(view)
     }
+
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+  /*      for (i in 0..8) {
+            onBindViewHolder(holder, i)
+        }*/
+
+    }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
    //     holder.cardTitle.text = cardTitles[position]
@@ -128,6 +140,12 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
 
  //       Picasso.get().load("https://picsum.photos/seed/picsum/200/300").into(holder.cardImage)
 
+ /*       if (position < 8){
+    holder.cardImage.visibility = View.INVISIBLE
+    holder.cardImage.setPadding(0,0,0,0)
+    holder.cardView.layout(0,0,0,0)
+}*/
+
         holder.cardImage.setBackgroundColor(Color.WHITE)
         holder.itemView.setOnClickListener {
             Log.i("size", "getFourRandomCards " + position.toString())
@@ -135,8 +153,15 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
             if (player == 1) {
                 player = 2
                 holder.cardImage.setBackgroundColor(Color.GREEN)
+                holder.cardView.setCardBackgroundColor(Color.MAGENTA)
+    //            holder.cardImage.setImageDrawable(R.drawable.rectgreen)
+
+                holder.cardImage.setImageResource(R.drawable.rectgreen)
 
                 var positionRow = position / 8
+
+                // testa så här
+      //          positionRow += 1
 
                 var positionColumn = (position % 8) + 1
 
@@ -149,6 +174,9 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
             {
                 player = 1
                 holder.cardImage.setBackgroundColor(Color.RED)
+               holder.cardView.setCardBackgroundColor(Color.CYAN)
+    //            holder.cardImage.setImageDrawable(getDrawable(R.drawable.rectred))
+                holder.cardImage.setImageResource(R.drawable.rectred)
 
                 var positionRow = position / 8
 
@@ -176,10 +204,11 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
 
 
     fun checkRows(){
-  //      print("------rows------")
-        for (i in 1..8)
+
+      //  for (i in 1..8)
+            for (i in 0..7)
         {
-            test(arrayOfRows[i], 0, false, i)
+            test(arrayOfRows[i], 0, false, true)
         }
     }
 
@@ -187,7 +216,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
     {
  //       print("------columns------")
         for (i in 1..8){
-            test(arrayOfColumns[i], 9, false, i)
+            test(arrayOfColumns[i], 9, false, false)
         }
     }
 
@@ -212,7 +241,8 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
     }
 
  //   fun test(rad: Array<Int>, column: Int, copyRowToColumn: Boolean, rowOrColumnNumber : Int){
- fun test(rad: ArrayList<Int>, column: Int, copyRowToColumn: Boolean, rowOrColumnNumber : Int){
+ //fun test(rad: ArrayList<Int>, column: Int, copyRowToColumn: Boolean, rowOrColumnNumber : Int){
+ fun test(rad: ArrayList<Int>, column: Int, copyRowToColumn: Boolean, checkRow : Boolean){
         var inRowRed = 0
         var inRowGreen = 0
    //     var rad2:[Int] = rad
@@ -231,6 +261,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
             copyRowToColumn2(column)
             rad2 = column1Temp
             for (i in 1..8){
+     //       for (i in 0..7){
                 if (rad2[i] == 1){
 
                     inRowGreen += 1
@@ -261,48 +292,94 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
         }else{
             // Check row and check column will enter here
             // When I check rows then Column enters as value 0, when I check column the Column enters as value 9
-            for (i in 1..8){
 
-                if (inRowRed == 1){
-                    firstInRow = i
-                }
-                if (inRowGreen == 1){
-                    firstInRow = i
-                }
+                if (checkRow)
+                {
+                    for (i in 1..8) {
+                        //      for (i in 0..7){
+                        if (inRowRed == 1) {
+                            firstInRow = i
+                        }
+                        if (inRowGreen == 1) {
+                            firstInRow = i
+                        }
 
-                if (rad[i] == 1){
+                        if (rad[i] == 1) {
 
-                    inRowGreen += 1
+                            inRowGreen += 1
 
-                    if (inRowGreen >= checkForNumbers){
-  //                     print("First \(firstInRow-1)")
-   //                     print("Last \(i)")
+                            if (inRowGreen >= checkForNumbers) {
+                                //                     print("First \(firstInRow-1)")
+                                //                     print("Last \(i)")
 
-    //                    winner(color:"Grön", column: column)
-                        Log.i("size", "Winner")
-                        Winner = 1
+                                //                    winner(color:"Grön", column: column)
+                                Log.i("size", "Winner")
+                                Winner = 1
+                            }
+                        } else {
+                            inRowGreen = 0
+                        }
+                        if (rad[i] == 2) {
+
+                            inRowRed += 1
+
+                            if (inRowRed >= checkForNumbers) {
+                                //                     print("First \(firstInRow-1)")
+                                //                    print("Last \(i)")
+
+                                //                    winner(color:"Röd", column: column)
+                                Log.i("size", "Winner")
+                                Winner = 2
+                            }
+                        } else {
+                            inRowRed = 0
+                        }
                     }
                 }
-                else{
-                    inRowGreen = 0
-                }
-                if (rad[i] == 2){
+                else
+                {
+                  //  for (i in 1..8) {
+                        for (i in 0..7)
+                        {
+                        if (inRowRed == 1) {
+                            firstInRow = i
+                        }
+                        if (inRowGreen == 1) {
+                            firstInRow = i
+                        }
 
-                    inRowRed += 1
+                        if (rad[i] == 1) {
 
-                    if (inRowRed >= checkForNumbers){
-   //                     print("First \(firstInRow-1)")
-    //                    print("Last \(i)")
+                            inRowGreen += 1
 
-    //                    winner(color:"Röd", column: column)
-                        Log.i("size", "Winner")
-                        Winner = 2
+                            if (inRowGreen >= checkForNumbers) {
+                                //                     print("First \(firstInRow-1)")
+                                //                     print("Last \(i)")
+
+                                //                    winner(color:"Grön", column: column)
+                                Log.i("size", "Winner")
+                                Winner = 1
+                            }
+                        } else {
+                            inRowGreen = 0
+                        }
+                        if (rad[i] == 2) {
+
+                            inRowRed += 1
+
+                            if (inRowRed >= checkForNumbers) {
+                                //                     print("First \(firstInRow-1)")
+                                //                    print("Last \(i)")
+
+                                //                    winner(color:"Röd", column: column)
+                                Log.i("size", "Winner")
+                                Winner = 2
+                            }
+                        } else {
+                            inRowRed = 0
+                        }
                     }
                 }
-                else{
-                    inRowRed = 0
-                }
-            }
         }
     }
 
@@ -352,7 +429,8 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
     }
 
     fun copyRowToTemp(){
-        row1Temp = arrayOfRows[1]
+        row1Temp = arrayOfRows[0]
+     //   row1Temp = arrayOfRows[1]
         Log.i("size", "row1Temp 0 " + row1Temp[0].toString())
         Log.i("size", "row1Temp 1 " + row1Temp[1].toString())
         Log.i("size", "row1Temp 2 " + row1Temp[2].toString())
@@ -363,7 +441,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
         Log.i("size", "row1Temp 7 " + row1Temp[7].toString())
         Log.i("size", "row1Temp 8 " + row1Temp[8].toString())
 
-        row2Temp = arrayOfRows[2]
+        row2Temp = arrayOfRows[1]
         Log.i("size", "row1Temp 0 " + row2Temp[0].toString())
         Log.i("size", "row1Temp 1 " + row2Temp[1].toString())
         Log.i("size", "row1Temp 2 " + row2Temp[2].toString())
@@ -374,7 +452,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
         Log.i("size", "row1Temp 7 " + row2Temp[7].toString())
         Log.i("size", "row1Temp 8 " + row2Temp[8].toString())
 
-        row3Temp = arrayOfRows[3]
+        row3Temp = arrayOfRows[2]
 
         Log.i("size", "row1Temp 0 " + row3Temp[0].toString())
         Log.i("size", "row1Temp 1 " + row3Temp[1].toString())
@@ -386,7 +464,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
         Log.i("size", "row1Temp 7 " + row3Temp[7].toString())
         Log.i("size", "row1Temp 8 " + row3Temp[8].toString())
 
-        row4Temp = arrayOfRows[4]
+        row4Temp = arrayOfRows[3]
 
         Log.i("size", "row1Temp 0 " + row4Temp[0].toString())
         Log.i("size", "row1Temp 1 " + row4Temp[1].toString())
@@ -398,10 +476,10 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
         Log.i("size", "row1Temp 7 " + row4Temp[7].toString())
         Log.i("size", "row1Temp 8 " + row4Temp[8].toString())
 
-        row5Temp = arrayOfRows[5]
-        row6Temp = arrayOfRows[6]
-        row7Temp = arrayOfRows[7]
-        row8Temp = arrayOfRows[8]
+        row5Temp = arrayOfRows[4]
+        row6Temp = arrayOfRows[5]
+        row7Temp = arrayOfRows[6]
+        row8Temp = arrayOfRows[7]
     }
 
     /*
@@ -539,6 +617,7 @@ class GridItemAdapter(val cardTitles : Array<String>, val cardImages: Array<Stri
  //       print("här har vi columntemp \(column1Temp)")
         //      print("Rad \(rad2)")
         for (i in 1..8){
+   //     for (i in 0..7){
             if (rad2[i] == 1){
                 firstRedInColumn = 0
                 if (firstGreenInColumn == 0){
