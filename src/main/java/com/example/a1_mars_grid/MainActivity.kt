@@ -1,5 +1,10 @@
 package com.example.a1_mars_grid
 
+
+//<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+//
+//    android:theme="@style/Theme.1_mars_grid">
+
 import android.graphics.Color
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     //    holder.cardImage.setImageDrawable(getDrawable(R.drawable.rectgreen))
 
         var click = findViewById<ImageView>(R.id.myImage)
+        click.setImageDrawable(getDrawable(R.drawable.rectwhite))
 
         click.setOnClickListener{
             click.setImageDrawable(getDrawable(R.drawable.rectred))
@@ -47,6 +53,17 @@ class MainActivity : AppCompatActivity() {
             arrayOfRows = Array(9) {ArrayList<Int>(Collections.nCopies(9, 0)) }
             arrayOfColumns = Array(9) {ArrayList<Int>(Collections.nCopies(9, 0)) }
             adapter.notifyDataSetChanged()
+
+            // when I only had one, it left some squares red and green at the top row.
+            adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
+            click.setImageDrawable(getDrawable(R.drawable.rectwhite))
+
+
+   //         adapter.onBindViewHolder(GridItemAdapter,1)
+       //     gridItems.adapter.notifyDataSetChanged()
         }
 
 
@@ -78,6 +95,10 @@ class MainActivity : AppCompatActivity() {
     fun playSound(start : Boolean) {
 
         var textIgen = findViewById<TextView>(R.id.textigen)
+        var click = findViewById<ImageView>(R.id.myImage)
+
+
+
 
         var resId = getResources().getIdentifier(
             R.raw.gronfyra1.toString(),
@@ -93,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 
             mediaPlayer = MediaPlayer.create(this, resId)
             textIgen.text = "Grön har fyra i rad"
-            textIgen.text = "Gron har fyra i rad"
+            click.setImageDrawable(getDrawable(R.drawable.rectgreen))
         }
         else
         {
@@ -104,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             )
             mediaPlayer = MediaPlayer.create(this, resId)
             textIgen.text = "Röd har fyra i rad"
+            click.setImageDrawable(getDrawable(R.drawable.rectred))
         }
 
 
